@@ -1,0 +1,36 @@
+name: AccuKnox Code Analysis Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  code-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.0
+
+      - name: Run AccuKnox Code Analysis
+        uses: accuknox/Accuknox-Code-Analysis@v1.0.1
+        with:
+          # Pick any combination of scans
+          scan_type: "sbom"
+
+          # AccuKnox credentials
+          accuknox_token: ${{ secrets.ACCUKNOX_TOKEN }}
+          accuknox_endpoint: ${{ secrets.ACCUKNOX_ENDPOINT }}
+          accuknox_label: ${{ secrets.ACCUKNOX_LABEL }}
+
+          # Common options
+          soft_fail: true            # Continue the pipeline on findings
+          upload_artifact: true      # Upload kept result files as an artifact
+
+          # SBOM – image or filesystem (project_name required)
+          sbom_scan_type: "filesystem"
+          sbom_scan_path: "."
+          sbom_project_name: "v-test"
